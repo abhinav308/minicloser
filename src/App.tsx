@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AmbientBackground } from './components/AmbientBackground';
 import { MusicToggle } from './components/MusicToggle';
+import { QuickNav } from './components/QuickNav';
 import { IntroScreen } from './components/IntroScreen';
 import { RoseBloom } from './components/RoseBloom';
 import { MessageScene } from './components/MessageScene';
 import { MemoryScene } from './components/MemoryScene';
-import { PhotoMemories } from './components/PhotoMemories';
+import { GalleryAlbum } from './components/GalleryAlbum';
 import { FinalReveal } from './components/FinalReveal';
 import { LastMessage } from './components/LastMessage';
+import { audioManager } from './utils/audioManager';
 
 export type Scene =
   | 'intro'
@@ -21,19 +23,41 @@ export type Scene =
 
 export const App: React.FC = () => {
   const [scene, setScene] = useState<Scene>('intro');
+  const [returnScene, setReturnScene] = useState<Scene>('intro');
+  const [isDirectAlbumAccess, setIsDirectAlbumAccess] = useState(false);
 
   // Scroll to top on scene transition
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [scene]);
 
+  const handleOpenAlbumDirectly = () => {
+    // Start music on gesture if not already started
+    audioManager.startOnInteraction();
+    setReturnScene(scene);
+    setIsDirectAlbumAccess(true);
+    setScene('photos');
+  };
+
+  const handleReturnToStory = () => {
+    setIsDirectAlbumAccess(false);
+    setScene(returnScene === 'photos' ? 'intro' : returnScene);
+  };
+
   return (
     <div className="app-container">
       {/* Cinematic Ambient Atmosphere & Embers */}
       <AmbientBackground />
 
-      {/* Music Toggle (appears top-right once interaction has begun) */}
-      <MusicToggle />
+      {/* Top Bar Controls: Quick Navigation (Top-Left) & Music Toggle (Top-Right) */}
+      <div className="top-controls-bar">
+        <QuickNav
+          isAlbumActive={scene === 'photos'}
+          onOpenAlbum={handleOpenAlbumDirectly}
+          onReturnToStory={handleReturnToStory}
+        />
+        <MusicToggle />
+      </div>
 
       {/* Cinematic Scene Transitions */}
       <AnimatePresence mode="wait">
@@ -46,7 +70,10 @@ export const App: React.FC = () => {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             style={{ width: '100%' }}
           >
-            <IntroScreen onBloomComplete={() => setScene('bloom')} />
+            <IntroScreen
+              onBloomComplete={() => setScene('bloom')}
+              onOpenAlbum={handleOpenAlbumDirectly}
+            />
           </motion.div>
         )}
 
@@ -85,7 +112,12 @@ export const App: React.FC = () => {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             style={{ width: '100%' }}
           >
-            <MemoryScene onContinue={() => setScene('photos')} />
+            <MemoryScene
+              onContinue={() => {
+                setIsDirectAlbumAccess(false);
+                setScene('photos');
+              }}
+            />
           </motion.div>
         )}
 
@@ -98,7 +130,11 @@ export const App: React.FC = () => {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             style={{ width: '100%' }}
           >
-            <PhotoMemories onContinue={() => setScene('final')} />
+            <GalleryAlbum
+              onContinue={() => setScene('final')}
+              onBackToStory={handleReturnToStory}
+              isDirectAccess={isDirectAlbumAccess}
+            />
           </motion.div>
         )}
 

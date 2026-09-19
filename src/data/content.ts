@@ -1,6 +1,11 @@
 export interface PhotoItem {
+  id?: string;
   src: string;
+  title?: string;
   caption: string;
+  date?: string;
+  category?: 'Favorites' | 'Adventures' | 'Moments';
+  aspectRatio?: 'portrait' | 'landscape' | 'square';
 }
 
 export interface MemoryItem {
@@ -22,6 +27,7 @@ export interface SurpriseContent {
   memoriesTitle: string;
   memories: MemoryItem[];
   photosTitle: string;
+  photosSubtitle?: string;
   photos: PhotoItem[];
   finalTitle: string;
   finalMessage: string;
@@ -78,22 +84,65 @@ export const surpriseContent: SurpriseContent = {
     }
   ],
 
-  // 6. Photo Memories (Screen 5)
-  // Drop your photos into public/photos/ and set their paths here:
-  // e.g., "/photos/photo1.jpg"
+  // 6. Photo Gallery Album (Screen 5 & Direct Access)
+  // Drop your photos into public/photos/ (e.g. photo1.jpg, photo2.jpg)
+  // and set their paths here: e.g. "/photos/photo1.jpg"
   photosTitle: "Moments & Memories",
+  photosSubtitle: "A collection of times worth remembering",
   photos: [
     {
+      id: "photo-1",
       src: "",
-      caption: "One of my favorite memories."
+      title: "Favorite Memory",
+      caption: "One of my all-time favorite memories with you.",
+      date: "Special Day",
+      category: "Favorites",
+      aspectRatio: "portrait",
     },
     {
+      id: "photo-2",
       src: "",
-      caption: "Unfiltered laughter and good times."
+      title: "Unfiltered Laughs",
+      caption: "Unfiltered laughter and times we couldn't stop smiling.",
+      date: "Good Times",
+      category: "Moments",
+      aspectRatio: "square",
     },
     {
+      id: "photo-3",
       src: "",
-      caption: "To many more chapters together."
+      title: "On the Road",
+      caption: "The spontaneous trips and adventures that turned into great stories.",
+      date: "Adventure",
+      category: "Adventures",
+      aspectRatio: "portrait",
+    },
+    {
+      id: "photo-4",
+      src: "",
+      title: "Everyday Magic",
+      caption: "Quiet coffee talks and conversations that felt effortless.",
+      date: "Golden Hour",
+      category: "Moments",
+      aspectRatio: "landscape",
+    },
+    {
+      id: "photo-5",
+      src: "",
+      title: "Best Crew",
+      caption: "Surrounded by good energy, celebrating small wins together.",
+      date: "Celebration",
+      category: "Favorites",
+      aspectRatio: "square",
+    },
+    {
+      id: "photo-6",
+      src: "",
+      title: "Next Chapters",
+      caption: "To many more chapters, travels, and unforgettable moments ahead.",
+      date: "Always",
+      category: "Adventures",
+      aspectRatio: "portrait",
     }
   ],
 

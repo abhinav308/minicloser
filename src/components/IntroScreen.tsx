@@ -9,9 +9,13 @@ import { audioManager } from '../utils/audioManager';
 
 interface IntroScreenProps {
   onBloomComplete: () => void;
+  onOpenAlbum?: () => void;
 }
 
-export const IntroScreen: React.FC<IntroScreenProps> = ({ onBloomComplete }) => {
+export const IntroScreen: React.FC<IntroScreenProps> = ({
+  onBloomComplete,
+  onOpenAlbum,
+}) => {
   const [isReady, setIsReady] = useState(false);
   const [isBlooming, setIsBlooming] = useState(false);
 
@@ -30,6 +34,13 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onBloomComplete }) => 
     setTimeout(() => {
       onBloomComplete();
     }, 750);
+  };
+
+  const handleDirectAlbumClick = () => {
+    audioManager.startOnInteraction();
+    if (onOpenAlbum) {
+      onOpenAlbum();
+    }
   };
 
   return (
@@ -118,6 +129,22 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onBloomComplete }) => 
           isClicked={isBlooming}
         />
       </motion.div>
+
+      {/* Direct Album Link on Home Screen */}
+      {onOpenAlbum && (
+        <motion.button
+          type="button"
+          onClick={handleDirectAlbumClick}
+          className="intro-quick-album-link"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: isReady ? 0.75 : 0.35, y: 0 }}
+          whileHover={{ opacity: 1, scale: 1.03 }}
+          transition={{ duration: 0.4 }}
+          aria-label="Jump directly to the photo gallery album"
+        >
+          <span>📷 or jump straight to Album →</span>
+        </motion.button>
+      )}
     </main>
   );
 };

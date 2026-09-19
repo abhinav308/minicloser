@@ -143,6 +143,109 @@ body {
   }
 }
 
+/* Top Bar Controls (QuickNav on left, Music on right) */
+.top-controls-bar {
+  position: fixed;
+  top: max(1.25rem, env(safe-area-inset-top, 1.25rem));
+  left: max(1.25rem, env(safe-area-inset-left, 1.25rem));
+  right: max(1.25rem, env(safe-area-inset-right, 1.25rem));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.top-controls-bar > * {
+  pointer-events: auto;
+}
+
+/* QuickNav Pill Button */
+.quick-nav-pill-btn {
+  background: rgba(20, 15, 18, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.quick-nav-pill-btn:hover {
+  border-color: var(--accent-rose);
+  color: var(--text-primary);
+  box-shadow: 0 0 12px rgba(232, 74, 108, 0.25);
+  transform: translateY(-1px);
+}
+
+.quick-nav-pill-btn:active {
+  transform: scale(0.96);
+}
+
+.pill-icon {
+  font-size: 0.8rem;
+}
+
+/* Music Toggle Button */
+.music-toggle-btn {
+  background: rgba(20, 15, 18, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.music-toggle-btn:hover {
+  border-color: var(--accent-rose);
+  color: var(--text-primary);
+  box-shadow: 0 0 12px rgba(232, 74, 108, 0.25);
+  transform: translateY(-1px);
+}
+
+.music-toggle-btn:active {
+  transform: scale(0.96);
+}
+
+/* Intro Direct Album Link */
+.intro-quick-album-link {
+  margin-top: 1.25rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.intro-quick-album-link:hover {
+  color: var(--accent-rose-light);
+  text-shadow: 0 0 10px rgba(232, 74, 108, 0.4);
+}
+
 /* Glass Card */
 .glass-card {
   position: relative;
@@ -258,34 +361,490 @@ body {
   outline-offset: 3px;
 }
 
-/* Music Toggle Discreet Button */
-.music-toggle-btn {
-  position: fixed;
-  top: max(1.25rem, env(safe-area-inset-top, 1.25rem));
-  right: max(1.25rem, env(safe-area-inset-right, 1.25rem));
-  z-index: 50;
-  background: rgba(20, 15, 18, 0.65);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* ======================================================
+   GALLERY ALBUM MODERN STYLING
+   ====================================================== */
+
+.album-scene-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding: 5rem 1.25rem 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.album-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.album-pill-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent-rose-light);
+  background: rgba(232, 74, 108, 0.1);
+  border: 1px solid rgba(232, 74, 108, 0.25);
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+.album-title {
+  font-size: clamp(1.85rem, 6vw, 2.5rem);
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 0 25px rgba(244, 63, 94, 0.3);
+}
+
+.album-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  max-width: 320px;
+}
+
+/* Categories Filter Bar */
+.album-categories-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  background: rgba(18, 14, 17, 0.6);
+  backdrop-filter: blur(12px);
+  padding: 0.3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.album-category-btn {
+  background: transparent;
+  border: none;
   color: var(--text-secondary);
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  padding: 0.4rem 0.85rem;
+  padding: 0.4rem 0.9rem;
   border-radius: 999px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   transition: all 0.25s ease;
   user-select: none;
 }
 
-.music-toggle-btn:hover {
-  border-color: var(--accent-rose);
+.album-category-btn.active {
+  background: rgba(232, 74, 108, 0.25);
   color: var(--text-primary);
-  box-shadow: 0 0 12px rgba(232, 74, 108, 0.25);
+  border: 1px solid rgba(232, 74, 108, 0.4);
+  box-shadow: 0 0 10px rgba(232, 74, 108, 0.3);
+}
+
+.category-count {
+  font-size: 0.65rem;
+  opacity: 0.75;
+}
+
+/* Modern Photo Grid */
+.album-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .album-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+/* Modern Card */
+.album-card {
+  position: relative;
+  background: rgba(18, 14, 17, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(232, 74, 108, 0.2);
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+}
+
+.album-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 143, 165, 0.55);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.85), 0 0 20px rgba(232, 74, 108, 0.25);
+}
+
+.album-card:focus-visible {
+  outline: 2px solid var(--accent-rose-light);
+  outline-offset: 2px;
+}
+
+.card-tall {
+  min-height: 220px;
+}
+
+.card-square {
+  min-height: 170px;
+}
+
+.card-wide {
+  min-height: 160px;
+}
+
+/* Card Visual Area */
+.album-card-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+}
+
+.album-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.album-card:hover .album-card-image {
+  transform: scale(1.05);
+}
+
+.album-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(8, 6, 8, 0.85) 90%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.85rem;
+}
+
+.album-card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.album-card-caption {
+  font-size: 0.725rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Minimalist Modern Placeholder Card */
+.album-card-placeholder {
+  width: 100%;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 0.75rem;
+  text-align: center;
+  background: radial-gradient(circle at 50% 40%, rgba(232, 74, 108, 0.08) 0%, transparent 80%);
+}
+
+.placeholder-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(232, 74, 108, 0.1);
+  border: 1px solid rgba(232, 74, 108, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.album-card:hover .placeholder-icon-wrap {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(232, 74, 108, 0.4);
+}
+
+.placeholder-slot-label {
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.placeholder-slot-hint {
+  font-size: 0.675rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  font-style: italic;
+}
+
+.card-floating-tag {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(10, 8, 10, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Album Footer Actions */
+.album-footer-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.album-secondary-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  padding: 0.55rem 1.35rem;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.album-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ======================================================
+   PHOTO LIGHTBOX MODAL
+   ====================================================== */
+
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(4, 3, 5, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: max(1.5rem, env(safe-area-inset-top, 1.5rem));
+  right: max(1.5rem, env(safe-area-inset-right, 1.5rem));
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 110;
+}
+
+.lightbox-close-btn:hover {
+  background: rgba(232, 74, 108, 0.3);
+  border-color: var(--accent-rose);
+  transform: rotate(90deg);
+}
+
+.lightbox-counter {
+  position: absolute;
+  top: max(1.75rem, env(safe-area-inset-top, 1.75rem));
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  color: var(--accent-rose-light);
+  font-weight: 600;
+  z-index: 110;
+}
+
+.lightbox-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(18, 14, 17, 0.85);
+  border: 1px solid rgba(232, 74, 108, 0.3);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.95), 0 0 35px rgba(232, 74, 108, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.lightbox-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: rgba(8, 6, 8, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lightbox-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.placeholder-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(232, 74, 108, 0.1);
+  border: 1px solid rgba(232, 74, 108, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+}
+
+.placeholder-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.placeholder-hint {
+  font-size: 0.725rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  max-width: 260px;
+}
+
+.placeholder-hint code {
+  color: var(--accent-rose-light);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+}
+
+.lightbox-date-badge {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(10, 8, 10, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+}
+
+.lightbox-info {
+  padding: 1.25rem 1.5rem 1.5rem;
+  text-align: center;
+}
+
+.lightbox-category-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-rose);
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.lightbox-title {
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.lightbox-caption {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-family: var(--font-serif);
+  line-height: 1.5;
+}
+
+.lightbox-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(20, 15, 18, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  z-index: 105;
+  user-select: none;
+}
+
+.lightbox-nav-btn:hover {
+  background: rgba(232, 74, 108, 0.25);
+  border-color: var(--accent-rose);
+  box-shadow: 0 0 15px rgba(232, 74, 108, 0.4);
+}
+
+.lightbox-nav-btn.prev {
+  left: max(1rem, env(safe-area-inset-left, 1rem));
+}
+
+.lightbox-nav-btn.next {
+  right: max(1rem, env(safe-area-inset-right, 1rem));
 }
 
 /* Accessibility & Reduced Motion */
