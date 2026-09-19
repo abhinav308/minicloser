@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { surpriseContent } from '../data/content';
+import type { PhotoItem } from '../data/content';
 import { PhotoLightbox } from './PhotoLightbox';
+import { PhotoUploadModal } from './PhotoUploadModal';
+import { getStoredPhotos, deleteStoredPhoto } from '../utils/photoStorage';
 
 interface GalleryAlbumProps {
   onContinue: () => void;
@@ -18,13 +21,41 @@ export const GalleryAlbum: React.FC<GalleryAlbumProps> = ({
 }) => {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('All');
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [userPhotos, setUserPhotos] = useState<PhotoItem[]>([]);
 
-  const photos = surpriseContent.photos;
+  // Load user photos from IndexedDB on mount
+  useEffect(() => {
+    let isMounted = true;
+    getStoredPhotos()
+      .then((stored) => {
+        if (isMounted) {
+          setUserPhotos(stored);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Preset static photos from content.ts
+  const presetPhotos = surpriseContent.photos;
+
+  // Combine user-uploaded photos with preset photos
+  // (Uploaded photos take priority; if user has uploaded photos, show them alongside presets)
+  const combinedPhotos: PhotoItem[] = [
+    ...userPhotos,
+    ...presetPhotos.filter(
+      (preset) => !userPhotos.some((up) => up.id === preset.id)
+    ),
+  ];
 
   // Filter photos based on category
   const filteredPhotos = activeCategory === 'All'
-    ? photos
-    : photos.filter((p) => p.category === activeCategory);
+    ? combinedPhotos
+    : combinedPhotos.filter((p) => p.category === activeCategory);
 
   const categories: CategoryFilter[] = ['All', 'Favorites', 'Moments', 'Adventures'];
 
@@ -48,6 +79,15 @@ export const GalleryAlbum: React.FC<GalleryAlbumProps> = ({
     );
   };
 
+  const handlePhotosUploaded = (newPhotos: PhotoItem[]) => {
+    setUserPhotos((prev) => [...newPhotos, ...prev]);
+  };
+
+  const handleDeletePhoto = async (id: string) => {
+    await deleteStoredPhoto(id);
+    setUserPhotos((prev) => prev.filter((p) => p.id !== id));
+  };
+
   return (
     <div className="album-scene-wrapper">
       {/* Album Header */}
@@ -57,7 +97,15 @@ export const GalleryAlbum: React.FC<GalleryAlbumProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <span className="album-pill-badge">Photo Collection</span>
+        <div className="album-badge-row">
+          <span className="album-pill-badge">Photo Collection</span>
+          {userPhotos.length > 0 && (
+            <span className="album-user-count-badge">
+              {userPhotos.length} uploaded
+            </span>
+          )}
+        </div>
+
         <h2 className="album-title title-serif">
           {surpriseContent.photosTitle}
         </h2>
@@ -67,25 +115,44 @@ export const GalleryAlbum: React.FC<GalleryAlbumProps> = ({
           </p>
         )}
 
+        {/* Action Button: + Add Photos */}
+        <div className="album-top-actions">
+          <button
+            type="button"
+            className="album-add-photos-btn"
+            onClick={() => setIsUploadModalOpen(true)}
+            aria-label="Upload photos to the album"
+          >
+            <span className="add-icon">+</span>
+            <span>Add Photos</span>
+          </button>
+        </div>
+
         {/* Category Filter Tabs */}
         <div className="album-categories-bar" role="tablist" aria-label="Filter photos">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              role="tab"
-              aria-selected={activeCategory === cat}
-              className={`album-category-btn ${activeCategory === cat ? 'active' : ''}`}
-              onClick={() => setActiveCategory(cat)}
-            >
-              {cat}
-              {cat !== 'All' && (
-                <span className="category-count">
-                  {photos.filter((p) => p.category === cat).length}
-                </span>
-              )}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const count = cat === 'All'
+              ? combinedPhotos.length
+              : combinedPhotos.filter((p) => p.category === cat).length;
+
+            return (
+              <button
+                key={cat}
+                type="button"
+                role="tab"
+                aria-selected={activeCategory === cat}
+                className={`album-category-btn ${activeCategory === cat ? 'active' : ''}`}
+                onClick={() => setActiveCategory(cat)}
+              >
+                {cat}
+                {cat !== 'All' && (
+                  <span className="category-count">
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </motion.div>
 
@@ -111,12 +178,20 @@ export const GalleryAlbum: React.FC<GalleryAlbumProps> = ({
                 exit={{ opacity: 0, scale: 0.94 }}
                 transition={{ duration: 0.4, ease: 'easeOut' }}
                 className={`album-card ${isTall ? 'card-tall' : isWide ? 'card-wide' : 'card-square'}`}
-                onClick={() => handleOpenPhoto(index)}
+                onClick={() => {
+                  if (photo.src) {
+                    handleOpenPhoto(index);
+                  } else {
+                    // Tapping empty slot opens upload modal
+                    setIsUploadModalOpen(true);
+                  }
+                }}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
-                    handleOpenPhoto(index);
+                    if (photo.src) handleOpenPhoto(index);
+                    else setIsUploadModalOpen(true);
                   }
                 }}
                 aria-label={`View photo ${photo.title || index + 1}`}
@@ -157,7 +232,7 @@ export const GalleryAlbum: React.FC<GalleryAlbumProps> = ({
                     <span className="placeholder-slot-label">
                       {photo.title || `Memory #${index + 1}`}
                     </span>
-                    <span className="placeholder-slot-hint">Tap to expand</span>
+                    <span className="placeholder-slot-hint">Tap to upload photo</span>
                   </div>
                 )}
 
@@ -209,6 +284,14 @@ export const GalleryAlbum: React.FC<GalleryAlbumProps> = ({
         onClose={handleCloseLightbox}
         onNext={handleNextPhoto}
         onPrev={handlePrevPhoto}
+        onDeletePhoto={handleDeletePhoto}
+      />
+
+      {/* Interactive In-Browser Multi-Photo Upload Modal */}
+      <PhotoUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onPhotosUploaded={handlePhotosUploaded}
       />
     </div>
   );

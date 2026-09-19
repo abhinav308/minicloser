@@ -9,6 +9,7 @@ interface PhotoLightboxProps {
   onClose: () => void;
   onNext: () => void;
   onPrev: () => void;
+  onDeletePhoto?: (id: string) => void;
 }
 
 export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
@@ -18,6 +19,7 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
   onClose,
   onNext,
   onPrev,
+  onDeletePhoto,
 }) => {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -111,7 +113,7 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
                   {photo.title || 'Photo Placeholder'}
                 </h4>
                 <p className="placeholder-hint">
-                  Drop your photo into <code>public/photos/</code> and link it in <code>content.ts</code>
+                  Tap "+ Add Photos" on the album screen to upload your photos
                 </p>
               </div>
             )}
@@ -138,6 +140,23 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
             <p className="lightbox-caption">
               "{photo.caption}"
             </p>
+
+            {/* Optional Delete Button for Uploaded Photos */}
+            {onDeletePhoto && photo.id && photo.src && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm('Are you sure you want to remove this photo from the album?')) {
+                    onDeletePhoto(photo.id!);
+                    onClose();
+                  }
+                }}
+                className="lightbox-delete-btn"
+                title="Remove photo from album"
+              >
+                🗑 Remove Photo
+              </button>
+            )}
           </div>
         </motion.div>
 
